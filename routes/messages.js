@@ -1,30 +1,35 @@
-/** GET /:id - get detail of message.
- *
- * => {message: {id,
- *               body,
- *               sent_at,
- *               read_at,
- *               from_user: {username, first_name, last_name, phone},
- *               to_user: {username, first_name, last_name, phone}}
- *
- * Make sure that the currently-logged-in users is either the to or from user.
- *
- **/
+const express = require('express');
+const router = express.Router();
+const Message = require('../models/message'); 
 
 
-/** POST / - post message.
- *
- * {to_username, body} =>
- *   {message: {id, from_username, to_username, body, sent_at}}
- *
- **/
+router.get('/:id', async (req, res) => {
+  try {
+    const message = await Message.get(req.params.id);
+    res.json(message);
+  } catch (error) {
+    res.status(404).json({ error: 'Message not found' });
+  }
+});
 
 
-/** POST/:id/read - mark message as read:
- *
- *  => {message: {id, read_at}}
- *
- * Make sure that the only the intended recipient can mark as read.
- *
- **/
+router.post('/', async (req, res) => {
+  try {
+    const message = await Message.create(req.body);
+    res.status(201).json(message);
+  } catch (error) {
+    res.status(400).json({ error: 'Failed to create message' });
+  }
+});
 
+
+router.post('/:id/read', async (req, res) => {
+  try {
+    const message = await Message.markRead(req.params.id);
+    res.json(message);
+  } catch (error) {
+    res.status(404).json({ error: 'Message not found' });
+  }
+});
+
+module.exports = router;
