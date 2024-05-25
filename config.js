@@ -4,15 +4,14 @@
 
 require("dotenv").config();
 
-const DB_URI = (process.env.NODE_ENV === "test")
- ? "postgresql://noah:@localhost/messagly_test"
-  : "postgresql://noah:@localhost/messagly";
-
+const DB_URI =
+  process.env.NODE_ENV === "test"
+    ? "postgresql://admin:password@localhost:5432/messagely_test"
+    : "postgresql://admin:password@localhost:5432/messagely";
 
 const SECRET_KEY = process.env.SECRET_KEY || "secret";
 
 const BCRYPT_WORK_FACTOR = 12;
-
 
 module.exports = {
   DB_URI,
